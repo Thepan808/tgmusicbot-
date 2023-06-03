@@ -51,19 +51,7 @@ from pyrogram.enums import ParseMode, ChatAction
 from yt_dlp import YoutubeDL
 from PIL import Image
 import ffmpeg
-from pyrogram import Client, errors
 
-from pyrogram.types import (
-
-    InlineQuery,
-
-    InlineQueryResultArticle,
-
-    InputTextMessageContent,
-
-)
-
-from youtubesearchpython import VideosSearch
 
 MUSIC_MAX_LENGTH = 90800
 DELAY_DELETE_INFORM = 72000
@@ -237,79 +225,6 @@ def _crop_to_square(img):
     bottom = (height + length) / 2
     return img.crop((left, top, right, bottom))
 
-# - Inline
-
-@Client.on_inline_query()
-
-async def inline(client: Client, query: InlineQuery):
-
-    answers = []
-
-    search_query = query.query.lower().strip().rstrip()
-
-    if search_query == "":
-
-        await client.answer_inline_query(
-
-            query.id,
-
-            results=answers,
-
-            switch_pm_text="♦ Pesquise sua vossa música ♦...",
-
-            switch_pm_parameter="help",
-
-            cache_time=0,
-
-        )
-
-    else:
-
-        search = VideosSearch(search_query, limit=200)
-
-        for result in search.result()["result"]:
-
-            answers.append(
-
-                InlineQueryResultArticle(
-
-                    title=result["title"],
-
-                    description="{}, {} views.".format(
-
-                        result["duration"], result["viewCount"]["short"]
-
-                    ),
-
-                    input_message_content=InputTextMessageContent(
-
-                        "https://www.youtube.com/watch?v={}".format(result["id"])
-
-                    ),
-
-                    thumb_url=result["thumbnails"][0]["url"],
-
-                )
-
-            )
-
-        try:
-
-            await query.answer(results=answers, cache_time=0)
-
-        except errors.QueryIdInvalid:
-
-            await query.answer(
-
-                results=answers,
-
-                cache_time=0,
-
-                switch_pm_text="Error: search timed out",
-
-                switch_pm_parameter="",
-
-            )
 
 
 # - start
