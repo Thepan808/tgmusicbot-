@@ -114,7 +114,7 @@ async def _fetch_and_send_music(message: Message):
     await message.reply_chat_action(ChatAction.TYPING)
     try:
         ydl_opts = {
-            'format': 'bestaudio',
+            'format': 'bestaudio[ext=m4a]',
             'outtmpl': '%(title)s - %(extractor)s-%(id)s.%(ext)s',
             'writethumbnail': True
         }
