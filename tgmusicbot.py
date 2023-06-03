@@ -99,7 +99,7 @@ main_filter = (
 
 @app.on_message(main_filter & filters.regex("^/ping$"))
 async def ping_pong(_, message):
-    await _reply_and_delete_later(message, "pong",
+    await _reply_and_delete_later(message, "pong baianoo",
                                   DELAY_DELETE_INFORM)
 
 
@@ -114,7 +114,7 @@ async def _fetch_and_send_music(message: Message):
     await message.reply_chat_action(ChatAction.TYPING)
     try:
         ydl_opts = {
-            'format': 'bestaudio[ext=m4a]',
+            'format': 'bestaudio[ext=mp3]',
             'outtmpl': '%(title)s - %(extractor)s-%(id)s.%(ext)s',
             'writethumbnail': True
         }
@@ -123,16 +123,16 @@ async def _fetch_and_send_music(message: Message):
         # send a link as a reply to bypass Music category check
         if not message.reply_to_message \
                 and _youtube_video_not_music(info_dict):
-            inform = ("This video is not under Music category, "
-                      "you can resend the link as a reply "
-                      "to force download it")
+            inform = ("este vídeo não está na categoria de Música, "
+                      "Você pode reenviar o link como resposta "
+                      "para forçar o download")
             await _reply_and_delete_later(message, inform,
                                           DELAY_DELETE_INFORM)
             return
         if info_dict['duration'] > MUSIC_MAX_LENGTH:
             readable_max_length = str(timedelta(seconds=MUSIC_MAX_LENGTH))
-            inform = ("This won't be downloaded because its audio length is "
-                      "longer than the limit `{}` which is set by the bot"
+            inform = ("Isso não será baixado porque sua duração de áudio é "
+                      "maior que o limite `{}` que é definido pelo bot"
                       .format(readable_max_length))
             await _reply_and_delete_later(message, inform,
                                           DELAY_DELETE_INFORM)
