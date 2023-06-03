@@ -177,12 +177,12 @@ async def _upload_audio(message: Message, info_dict, audio_file):
         os.remove(audio_file)
         audio_file = audio_file_opus
     thumbnail_url = info_dict['thumbnail']
-    if os.path.isfile(basename + ".jpg"):
-        thumbnail_file = basename + ".jpg"
+    if os.path.isfile(basename + ".png"):
+        thumbnail_file = basename + ".png"
     else:
         thumbnail_file = basename + "." + \
             _get_file_extension_from_url(thumbnail_url)
-    squarethumb_file = basename + "_squarethumb.jpg"
+    squarethumb_file = basename + "_squarethumb.png"
     make_squarethumb(thumbnail_file, squarethumb_file)
     webpage_url = info_dict['webpage_url']
     title = info_dict['title']
