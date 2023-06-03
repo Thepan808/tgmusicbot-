@@ -53,7 +53,7 @@ from PIL import Image
 import ffmpeg
 
 MUSIC_MAX_LENGTH = 90800
-DELAY_DELETE_INFORM = 10
+DELAY_DELETE_INFORM = 72000
 TG_THUMB_MAX_LENGTH = 320
 REGEX_SITES = (
     r"^((?:https?:)?\/\/)"
