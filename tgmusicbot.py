@@ -171,18 +171,18 @@ async def _reply_and_delete_later(message: Message, text: str, delay: int):
 
 async def _upload_audio(message: Message, info_dict, audio_file):
     basename = audio_file.rsplit(".", 1)[-2]
-    if info_dict['ext'] == 'rb':
+    if info_dict['ext'] == 'webp':
         audio_file_opus = basename + ".m4a"
         ffmpeg.input(audio_file).output(audio_file_opus, codec="copy").run()
         os.remove(audio_file)
         audio_file = audio_file_opus
     thumbnail_url = info_dict['thumbnail']
-    if os.path.isfile(basename + ".jpeg"):
-        thumbnail_file = basename + ".jpeg"
+    if os.path.isfile(basename + ".rb"):
+        thumbnail_file = basename + ".rb"
     else:
         thumbnail_file = basename + "." + \
             _get_file_extension_from_url(thumbnail_url)
-    squarethumb_file = basename + "_squarethumb.jpeg"
+    squarethumb_file = basename + "_squarethumb.rb"
     make_squarethumb(thumbnail_file, squarethumb_file)
     webpage_url = info_dict['webpage_url']
     title = info_dict['title']
