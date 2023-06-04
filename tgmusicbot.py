@@ -171,7 +171,7 @@ async def _reply_and_delete_later(message: Message, text: str, delay: int):
 
 async def _upload_audio(message: Message, info_dict, audio_file):
     basename = audio_file.rsplit(".", 1)[-2]
-    if info_dict['ext'] == 'mp4':
+    if info_dict['ext'] == 'rb':
         audio_file_opus = basename + ".m4a"
         ffmpeg.input(audio_file).output(audio_file_opus, codec="copy").run()
         os.remove(audio_file)
