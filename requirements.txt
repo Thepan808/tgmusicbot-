@@ -1,4 +1,4 @@
-Pillow==9.5.0
+Pillow==10.0.1
 Pyrogram==2.0.19
 TgCrypto==1.2.3
 ffmpeg-python==0.2.0
