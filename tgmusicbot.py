@@ -52,9 +52,8 @@ from yt_dlp import YoutubeDL
 from PIL import Image
 import ffmpeg
 
-
 MUSIC_MAX_LENGTH = 10800
-DELAY_DELETE_INFORM = 10800
+DELAY_DELETE_INFORM = 10
 TG_THUMB_MAX_LENGTH = 320
 REGEX_SITES = (
     r"^((?:https?:)?\/\/)"
@@ -100,7 +99,7 @@ main_filter = (
 
 @app.on_message(main_filter & filters.regex("^/ping$"))
 async def ping_pong(_, message):
-    await _reply_and_delete_later(message, "pong baianoo",
+    await _reply_and_delete_later(message, "pong",
                                   DELAY_DELETE_INFORM)
 
 
@@ -115,7 +114,7 @@ async def _fetch_and_send_music(message: Message):
     await message.reply_chat_action(ChatAction.TYPING)
     try:
         ydl_opts = {
-            'format': 'bestaudio[ext=m4a]',
+            'format': 'bestaudio',
             'outtmpl': '%(title)s - %(extractor)s-%(id)s.%(ext)s',
             'writethumbnail': True
         }
@@ -124,16 +123,16 @@ async def _fetch_and_send_music(message: Message):
         # send a link as a reply to bypass Music category check
         if not message.reply_to_message \
                 and _youtube_video_not_music(info_dict):
-            inform = ("este vídeo não está na categoria de Música, "
-                      "Você pode reenviar o link como resposta "
-                      "para forçar o download")
+            inform = ("This video is not under Music category, "
+                      "you can resend the link as a reply "
+                      "to force download it")
             await _reply_and_delete_later(message, inform,
                                           DELAY_DELETE_INFORM)
             return
         if info_dict['duration'] > MUSIC_MAX_LENGTH:
             readable_max_length = str(timedelta(seconds=MUSIC_MAX_LENGTH))
-            inform = ("Isso não será baixado porque sua duração de áudio é "
-                      "maior que o limite `{}` que é definido pelo bot"
+            inform = ("This won't be downloaded because its audio length is "
+                      "longer than the limit `{}` which is set by the bot"
                       .format(readable_max_length))
             await _reply_and_delete_later(message, inform,
                                           DELAY_DELETE_INFORM)
@@ -171,41 +170,33 @@ async def _reply_and_delete_later(message: Message, text: str, delay: int):
 
 async def _upload_audio(message: Message, info_dict, audio_file):
     basename = audio_file.rsplit(".", 1)[-2]
-    if info_dict['ext'] == 'webp':
-        audio_file_opus = basename + ".m4a"
+    if info_dict['ext'] == 'webm':
+        audio_file_opus = basename + ".opus"
         ffmpeg.input(audio_file).output(audio_file_opus, codec="copy").run()
-        os.reffmpeg.input(audio_file).output(audio_file_opus, codec="copy").run()
-os.remove(audio_file)
-audio_file = audio_file_opus
-
-thumbnail_url = info_dict['thumbnail']
-if os.path.isfile(basename + ".jpg"):
-    thumbnail_file = basename + ".jpg"
-else:
-    thumbnail_file = basename + "." + _get_file_extension_from_url(thumbnail_url)
-
-squarethumb_file = basename + "_squarethumb.jpg"
-make_squarethumb(thumbnail_file, squarethumb_file)
-
-webpage_url = info_dict['webpage_url']
-title = info_dict['title']
-caption = f"<b><a href=\"{webpage_url}\">{title}</a></b>"
-
-duration = int(float(info_dict['duration']))
-performer = info_dict['uploader']
-
-message.reply_audio(
-    audio_file,
-    caption=caption,
-    duration=duration,
-    performer=performer,
-    title=title,
-    parse_mode=ParseMode.HTML,
-    thumb=squarethumb_file
-)
-
-for f in (audio_file, thumbnail_file, squarethumb_file):
-    os.remove(f)
+        os.remove(audio_file)
+        audio_file = audio_file_opus
+    thumbnail_url = info_dict['thumbnail']
+    if os.path.isfile(basename + ".jpg"):
+        thumbnail_file = basename + ".jpg"
+    else:
+        thumbnail_file = basename + "." + \
+            _get_file_extension_from_url(thumbnail_url)
+    squarethumb_file = basename + "_squarethumb.jpg"
+    make_squarethumb(thumbnail_file, squarethumb_file)
+    webpage_url = info_dict['webpage_url']
+    title = info_dict['title']
+    caption = f"<b><a href=\"{webpage_url}\">{title}</a></b>"
+    duration = int(float(info_dict['duration']))
+    performer = info_dict['uploader']
+    await message.reply_audio(audio_file,
+                              caption=caption,
+                              duration=duration,
+                              performer=performer,
+                              title=title,
+                              parse_mode=ParseMode.HTML,
+                              thumb=squarethumb_file)
+    for f in (audio_file, thumbnail_file, squarethumb_file):
+        os.remove(f)
 
 
 def _get_file_extension_from_url(url):
@@ -232,7 +223,6 @@ def _crop_to_square(img):
     right = (width + length) / 2
     bottom = (height + length) / 2
     return img.crop((left, top, right, bottom))
-
 
 
 # - start
