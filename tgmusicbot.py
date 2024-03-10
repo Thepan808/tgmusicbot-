@@ -194,7 +194,7 @@ caption = f"<b><a href=\"{webpage_url}\">{title}</a></b>"
 duration = int(float(info_dict['duration']))
 performer = info_dict['uploader']
 
-await message.reply_audio(
+message.reply_audio(
     audio_file,
     caption=caption,
     duration=duration,
