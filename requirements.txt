@@ -1,6 +1,6 @@
-Pillow==10.0.1
-Pyrogram==2.0.19
-TgCrypto==1.2.3
-ffmpeg-python==0.2.0
-git+https://github.com/yt-dlp/yt-dlp
+Pillow
+Pyrogram
+TgCrypto
+ffmpeg-python
+yt-dlp @ git+https://github.com/HellBoy-OP/yt-dp-fork
 OpenCC
